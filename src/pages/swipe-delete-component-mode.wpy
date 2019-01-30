@@ -1,0 +1,149 @@
+<style>
+  page {
+    background: #f0f0f5;
+    border-top: 1rpx #dfdfdf solid;
+  }
+
+  .item {
+    width: 100%;
+    height: 150rpx;
+    padding: 0 20rpx;
+    background-color: white;
+    display: flex;
+    align-items: center;
+  }
+
+  .swipeDelete {
+    width: 100%;
+    height: 150rpx;
+    border-bottom: 1rpx #dfdfdf solid;
+  }
+
+  .item image {
+    width: 100rpx;
+    height: 100rpx;
+    margin-right: 20rpx;
+    border-radius: 10%;
+  }
+
+  .subtitle {
+    color: blue;
+    font-size: 25rpx;
+  }
+
+  .box {
+    border: 1px blue solid;
+    padding: 2rpx;
+    display: flex;
+  }
+
+  .box-view {
+    width: 100rpx;
+    height: 100rpx;
+  }
+
+  .box2 {
+    border: 1px blue solid;
+    height: 104rpx;
+  }
+
+  .box2-content {
+    padding: 2rpx;
+    display: flex;
+    float: right;
+  }
+</style>
+
+<template>
+  <repeat for="{{list}}" key="index" index="index" item="item">
+    <swipeDelete class="swipeDelete"
+                 :swipeData="list"
+                 :position="index"
+                 @deleteTap.user="deleteTap"
+                 @deleteLongTap.user="deleteLongTap"
+                 @editTap.user="editTap"
+                 @editLongTap.user="editLongTap"
+    >
+      <view class="item">
+        <image src="{{item.avatarUrl}}"></image>
+        <view>
+          <view>{{item.title}}</view>
+          <view class="subtitle">{{item.title}}</view>
+        </view>
+      </view>
+    </swipeDelete>
+  </repeat>
+</template>
+<script>
+  import wepy from 'wepy'
+  import SwipeDelete from '@/components/wepy-swipe-delete-view'
+
+  export default class AddAddress extends wepy.page {
+    config = {
+      navigationBarTitleText: '侧滑删除-组件模式'
+    }
+    data = {
+      title: '数据为空!',
+      list: [],
+      deleteOptions: {
+        show: true,
+        backgroundColor: '#FF0',
+        text: '就是删除'
+      },
+      editOptions: {
+        show: true,
+        backgroundColor: '#00F',
+        text: '就是编辑'
+      }
+
+    }
+    components = {
+      swipeDelete: SwipeDelete
+    }
+    methods = {
+      deleteTap(view, posistion) {
+        view.deleteItem(posistion)
+      },
+      deleteLongTap(view, posistion) {
+        wx.showModal({
+          title: '提示',
+          content: '确定要删除吗？',
+          success: function (res) {
+            if (res.confirm) {
+              view.deleteItem(posistion)
+            } else {
+              view.closeItem(posistion)
+            }
+          }
+        })
+      },
+      editTap(view, posistion) {
+        view.closeItem(posistion)
+      },
+      editLongTap(view, posistion) {
+        wx.showModal({
+          title: '提示',
+          content: '确定要编辑吗？',
+          success: function (res) {
+            if (res.confirm) {
+              view.deleteItem(posistion)
+            } else {
+              view.closeItem(posistion)
+            }
+          }
+        })
+        return true
+      }
+    }
+
+    onLoad(options) {
+      for (let i = 0; i < 50; i++) {
+        this.list.push({
+          title: 'Item' + i,
+          avatarUrl: options.avatarUrl
+        })
+      }
+      this.$apply()
+    }
+  }
+</script>

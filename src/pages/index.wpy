@@ -1,0 +1,109 @@
+<style lang="less">
+  page {
+    border-top: 1rpx #cecece solid;
+  }
+
+  .userinfo {
+    margin-top: 30rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .userinfo-avatar {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+  }
+
+  .userinfo-nickname {
+    color: #aaa;
+  }
+  .box{
+    border:1px blue solid;
+    padding: 2rpx;
+    display: flex;
+  }
+  .box-view{
+    width: 100rpx;
+    height: 100rpx;
+  }
+  .box2{
+    border:1px blue solid;
+    height:104rpx;
+  }
+  .box2-content{
+    padding: 2rpx;
+    display: flex;
+    float: right;
+  }
+</style>
+<template>
+  <view class="container">
+    <view class="userinfo" @tap="handleViewTap">
+      <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
+      <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
+    </view>
+  </view>
+    <label>从左到右有排列</label>
+    <view class="box">
+      <view class="box-view" style="background-color: red"></view>
+      <view class="box-view" style="background-color: green"></view>
+      <view class="box-view" style="background-color: blue"></view>
+    </view>
+    <label>从右到左有排列</label>
+    <view>
+      <view class="box2">
+        <view class="box2-content">
+          <view class="box-view" style="background-color: red"></view>
+          <view class="box-view" style="background-color: green"></view>
+          <view class="box-view" style="background-color: blue"></view>
+        </view>
+      </view>
+    </view>
+    <button style="width: 100%; margin: 20rpx;" @tap="goSwipeDeletePageMode">页面模式</button>
+    <button style="width: 100%; margin: 20rpx;" @tap="goSwipeDeleteComponentMode">组件模式</button>
+
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Toast from 'wepy-com-toast'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '侧滑删除'
+    }
+    components = {
+      toast: Toast
+    }
+    data = {
+      userInfo: {}
+    }
+    methods = {
+      toast() {
+      },
+      goSwipeDeletePageMode() {
+        wx.navigateTo({
+          url: 'swipe-delete-page-mode?avatarUrl=' + this.userInfo.avatarUrl
+        })
+      },
+      goSwipeDeleteComponentMode() {
+        wx.navigateTo({
+          url: 'swipe-delete-component-mode?avatarUrl=' + this.userInfo.avatarUrl
+        })
+      }
+    }
+
+    onLoad() {
+      let self = this
+      this.$parent.getUserInfo(function (userInfo) {
+        if (userInfo) {
+          console.log(userInfo)
+          self.userInfo = userInfo
+          self.$apply()
+        }
+      })
+    }
+  }
+</script>

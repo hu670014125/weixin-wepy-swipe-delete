@@ -1,0 +1,13 @@
+{
+  "description": "微信侧滑删除",
+  "setting": {
+    "urlCheck": true,
+    "es6": false,
+    "postcss": false,
+    "minified": false
+  },
+  "compileType": "miniprogram",
+  "appid": "",
+  "projectname": "swipe-delete",
+  "miniprogramRoot": "./dist"
+}
