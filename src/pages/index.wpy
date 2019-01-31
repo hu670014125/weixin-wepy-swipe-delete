@@ -61,8 +61,8 @@
         </view>
       </view>
     </view>
-    <button style="width: 100%; margin: 20rpx;" @tap="goSwipeDeletePageMode">页面模式</button>
-    <button style="width: 100%; margin: 20rpx;" @tap="goSwipeDeleteComponentMode">组件模式</button>
+    <button style="width: 90%; margin: 20rpx;" @tap="goSwipeDeletePageMode">页面模式</button>
+    <button style="width: 90%; margin: 20rpx;" @tap="goSwipeDeleteComponentMode">组件模式</button>
 
 </template>
 

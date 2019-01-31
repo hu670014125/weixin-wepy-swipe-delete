@@ -124,7 +124,7 @@
       swipeCheckState: 0, // 0未激活 1激活
       maxMoveLeft: 180, // 消息列表项最大左滑距离
       correctMoveLeft: 175, // 显示菜单时的左滑距离
-      thresholdMoveLeft: 75, // 左滑阈值，超过则显示菜单
+      thresholdMoveLeft: 0.2, // 左滑阈值，超过则显示菜单（20%）
       lastShowMsgId: '', // 记录上次显示菜单的消息id
       moveX: 0,  // 记录平移距离
       showState: 0, // 0 未显示菜单 1显示菜单
@@ -240,7 +240,8 @@
           this.lastShowMsgId = e.currentTarget.id
           return
         }
-        if (this.moveX < -this.thresholdMoveLeft) {
+        console.log((this.maxMoveLeft * this.thresholdMoveLeft))
+        if (this.moveX < -(this.maxMoveLeft * this.thresholdMoveLeft)) {
           this.moveX = -this.correctMoveLeft
           this.showState = 1
           this.lastShowMsgId = e.currentTarget.id
