@@ -136,7 +136,7 @@
       //     avatarUrl: options.avatarUrl
       //   })
       // }
-      for (let i = 0; i < 50; i++) {
+      for (let i = 0; i < 500; i++) {
         let msg = {}
         msg.userName = '' + '用户' + (i + 1)
         msg.msgText = '您有新的消息'

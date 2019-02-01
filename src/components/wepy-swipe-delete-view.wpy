@@ -46,7 +46,7 @@
 <template>
   <scroll-view style='height:600px;' scroll-y='{{scrollY}}'>
     <view wx:for="{{msgList}}" wx:key="id" class="swipe-item" animation='{{item.wrapAnimation}}'>
-      <view id='{{item.id}}'
+      <view id="{{item['swipe-delete-id']}}"
             class='swipe-content'
             animation='{{item.animation}}'
             @touchstart="ontouchstart"
@@ -57,14 +57,14 @@
       <view class='swipe-menu'>
         <view class="swipe-menu-content">
           <view class='swipe-menu-edit'
-                id='{{item.id}}'
+                id="{{item['swipe-delete-id']}}"
                 style="background-color: {{editOptions.backgroundColor}}; display: {{editOptions.show ? 'flex':'none'}};"
                 @tap.stop='onEditMsgTap'
                 @longpress='onEditMsgLongtap'>
             <view class="swipe-menu-text">{{editOptions.text}}</view>
           </view>
           <view class='swipe-menu-delete'
-                id='{{item.id}}'
+                id="{{item['swipe-delete-id']}}"
                 style="background-color: {{deleteOptions.backgroundColor}}; display: {{deleteOptions.show ? 'flex':'none'}};"
                 @tap.stop='onDeleteMsgTap'
                 @longpress='onDeleteMsgLongtap'>
@@ -117,11 +117,18 @@
       moveX: 0,  // 记录平移距离
       showState: 0, // 0 未显示菜单 1显示菜单
       touchStartState: 0, // 开始触摸时的状态 0 未显示菜单 1 显示菜单
-      swipeDirection: 0 // 是否触发水平滑动 0:未触发 1:触发水平滑动 2:触发垂直滑动
+      swipeDirection: 0, // 是否触发水平滑动 0:未触发 1:触发水平滑动 2:触发垂直滑动
+      currentPosition: {
+        swipeId: 'swipe-delete-id-0',
+        position: 0
+      }
     }
 
     onLoad() {
       this.msgList = this.swipeData
+      for (let i = 0; i < this.msgList.length; i++) {
+        this.msgList[i]['swipe-delete-id'] = 'swipe-delete-id-' + i
+      }
       let that = this
       that.$apply()
       // 根据menu的宽度计算item最大左滑的距离，
@@ -137,6 +144,7 @@
 
     methods = {
       ontouchstart: function (e) {
+        console.log(e)
         if (this.showState === 1) {
           this.touchStartState = 1
           this.showState = 0
@@ -172,7 +180,6 @@
           // 触发垂直操作
           if (Math.abs(moveY) > 4) {
             this.swipeDirection = 2
-
             return
           }
           // 触发水平操作
@@ -273,9 +280,9 @@
      * @return number
      */
     getItemIndex(swipeId) {
-      let msgList = this.data.msgList
+      let msgList = this.msgList
       for (let i = 0; i < msgList.length; i++) {
-        if (msgList[i].id === swipeId) {
+        if (msgList[i]['swipe-delete-id'] === swipeId) {
           return i
         }
       }
@@ -312,14 +319,22 @@
       animation.translateX(x).step()
       this.animationMsgItem(swipeId, animation)
     };
-
     /**
      * 设置Item左滑的动画
      * @param id
      * @param animation
      */
-    animationMsgItem(id, animation) {
-      let index = this.getItemIndex(id)
+    animationMsgItem(swipeId, animation) {
+      let index = 0
+      if (this.currentPosition.swipeId === swipeId) {
+        index = this.currentPosition.position
+      } else {
+        index = this.getItemIndex(swipeId)
+        this.currentPosition = {
+          swipeId: swipeId,
+          position: index
+        }
+      }
       this.msgList[index].animation = animation.export()
     };
 
