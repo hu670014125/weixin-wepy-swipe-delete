@@ -1,79 +1,84 @@
 <style lang="less">
   .swipe-item {
+    position: relative;
+  }
+  .swipe-content {
     width: 100%;
     position: relative;
-    left: 0;
-    top: 0;
-    overflow: hidden;
+    z-index: 10;
   }
-
-  .swipe-content {
-    position: absolute;
-    width: 100%;
-    left: 0;
-    top: 0;
-    z-index: 100;
-  }
-
   .swipe-menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: #dfdfdf;
+  }
+  .swipe-menu-content {
     height: 100%;
-    z-index: 0;
     display: flex;
     float: right;
   }
-
   .swipe-menu-delete {
-    padding: 0 20rpx;
+    padding: 0 40rpx;
     height: 100%;
     background-color: rgb(255, 58, 50);
     display: flex;
     align-items: center; // 配个display:flex;实现垂直居中，
     justify-content: center; // 配个display:flex;实现水平居中
   }
-
   .swipe-menu-text {
     color: #FFF;
   }
-
   .swipe-menu-edit {
-    padding: 0 20rpx;
+    padding: 0 40rpx;
     height: 100%;
     background-color: rgb(200, 199, 205);
     display: flex;
     align-items: center; // 配个display:flex;实现垂直居中，
     justify-content: center; // 配个display:flex;实现水平居中
   }
-
   .display {
     display: none !important;
   }
 </style>
 <template>
-  <view class="swipe-item {{swipeData[position].display || ''}}" animation='{{swipeData[position].wrapAnimation}}'>
-    <view class='swipe-content' animation='{{swipeData[position].animation}}' @touchstart="ontouchstart"
-          @touchmove="ontouchmove" @touchend="ontouchend">
-      <slot></slot>
-    </view>
-    <view class='swipe-menu'>
-      <view class='swipe-menu-edit'
-            style="background-color: {{editOptions.backgroundColor}}; display: {{editOptions.show ? 'flex':'none'}};"
-            @tap.stop='onEditMsgTap'
-            @longpress='onEditMsgLongtap'>
-        <view class="swipe-menu-text">{{editOptions.text}}</view>
+  <scroll-view style='height:600px;' scroll-y='{{scrollY}}'>
+    <view wx:for="{{msgList}}" wx:key="id" class="swipe-item" animation='{{item.wrapAnimation}}'>
+      <view id='{{item.id}}'
+            class='swipe-content'
+            animation='{{item.animation}}'
+            @touchstart="ontouchstart"
+            @touchmove="ontouchmove"
+            @touchend="ontouchend">
+        <slot></slot>
       </view>
-      <view class='swipe-menu-delete'
-            style="background-color: {{deleteOptions.backgroundColor}}; display: {{deleteOptions.show ? 'flex':'none'}};"
-            @tap.stop='onDeleteMsgTap'
-            @longpress='onDeleteMsgLongtap'>
-        <view class="swipe-menu-text">{{deleteOptions.text}}</view>
+      <view class='swipe-menu'>
+        <view class="swipe-menu-content">
+          <view class='swipe-menu-edit'
+                id='{{item.id}}'
+                style="background-color: {{editOptions.backgroundColor}}; display: {{editOptions.show ? 'flex':'none'}};"
+                @tap.stop='onEditMsgTap'
+                @longpress='onEditMsgLongtap'>
+            <view class="swipe-menu-text">{{editOptions.text}}</view>
+          </view>
+          <view class='swipe-menu-delete'
+                id='{{item.id}}'
+                style="background-color: {{deleteOptions.backgroundColor}}; display: {{deleteOptions.show ? 'flex':'none'}};"
+                @tap.stop='onDeleteMsgTap'
+                @longpress='onDeleteMsgLongtap'>
+            <view class="swipe-menu-text">{{deleteOptions.text}}</view>
+          </view>
+        </view>
       </view>
     </view>
-  </view>
+  </scroll-view>
 </template>
 <script>
   import wepy from 'wepy'
 
-  export default class SwipeDelete extends wepy.component {
+  export default class SwipeDeletePageMode extends wepy.component {
     props = {
       deleteOptions: {
         type: Object,
@@ -100,6 +105,9 @@
       }
     }
     data = {
+      msgList: [],
+      height: 0,
+      scrollY: true,
       swipeCheckX: 35, // 激活检测滑动的阈值
       swipeCheckState: 0, // 0未激活 1激活
       maxMoveLeft: 0, // 消息列表项最大左滑距离+menu的宽度
@@ -113,7 +121,9 @@
     }
 
     onLoad() {
+      this.msgList = this.swipeData
       let that = this
+      that.$apply()
       // 根据menu的宽度计算item最大左滑的距离，
       wx.createSelectorQuery().select('.swipe-menu-edit').boundingClientRect(function (rect) {
         that.correctMoveLeft += rect.width
@@ -142,7 +152,6 @@
         }
         this.lastMoveTime = e.timeStamp
       },
-
       ontouchmove: function (e) {
         if (this.swipeCheckState === 0) {
           return
@@ -159,6 +168,7 @@
         }
         // 未触发滑动方向
         if (this.swipeDirection === 0) {
+          console.log(Math.abs(moveY))
           // 触发垂直操作
           if (Math.abs(moveY) > 4) {
             this.swipeDirection = 2
@@ -168,14 +178,12 @@
           // 触发水平操作
           if (Math.abs(moveX) > 4) {
             this.swipeDirection = 1
-            this.setData({scrollY: false})
           } else {
             return
           }
         }
         // 禁用垂直滚动
         if (this.data.scrollY) {
-          this.setData({scrollY: false})
         }
 
         this.lastMoveTime = e.timeStamp
@@ -188,7 +196,7 @@
           moveX = -this.maxMoveLeft
         }
         this.moveX = moveX
-        this.translateXMsgItem(e.currentTarget.dataset.comIndex, moveX, 0)
+        this.translateXMsgItem(e.currentTarget.id, moveX, 0)
       },
       ontouchend: function (e) {
         this.swipeCheckState = 0
@@ -196,7 +204,6 @@
         this.swipeDirection = 0
         if (this.touchStartState === 1) {
           this.touchStartState = 0
-          this.setData({scrollY: true})
           return
         }
         // 垂直滚动，忽略
@@ -206,85 +213,104 @@
         if (this.moveX === 0) {
           this.showState = 0
           // 不显示菜单状态下,激活垂直滚动
-          this.setData({scrollY: true})
           return
         }
         if (this.moveX === this.correctMoveLeft) {
           this.showState = 1
-          this.lastShowMsgId = e.currentTarget.dataset.comIndex
+          this.lastShowMsgId = e.currentTarget.id
           return
         }
+        console.log((this.maxMoveLeft * this.thresholdMoveLeft))
         if (this.moveX < -(this.maxMoveLeft * this.thresholdMoveLeft)) {
           this.moveX = -this.correctMoveLeft
           this.showState = 1
-          this.lastShowMsgId = e.currentTarget.dataset.comIndex
+          this.lastShowMsgId = e.currentTarget.id
         } else {
           this.moveX = 0
           this.showState = 0
           // 不显示菜单,激活垂直滚动
-          this.setData({scrollY: true})
         }
-        this.translateXMsgItem(e.currentTarget.dataset.comIndex, this.moveX, 100)
-        // this.translateXMsgItem(e.currentTarget.id, 0, 0);
+        this.translateXMsgItem(e.currentTarget.id, this.moveX, 200)
       },
       onDeleteMsgTap: function (e) {
-        let positon = e.currentTarget.dataset.comIndex
-        this.$emit('deleteTap', this, positon)
+        let swipeId = e.currentTarget.id
+        let positon = this.getItemIndex(swipeId)
+        this.$emit('deleteTap', this, this.msgList[positon])
       },
       onDeleteMsgLongtap: function (e) {
-        let positon = e.currentTarget.dataset.comIndex
-        this.$emit('deleteLongTap', this, positon)
+        let swipeId = e.currentTarget.id
+        let positon = this.getItemIndex(swipeId)
+        this.$emit('deleteLongTap', this, this.msgList[positon])
       },
       onEditMsgTap: function (e) {
-        let positon = e.currentTarget.dataset.comIndex
-        this.$emit('editTap', this, positon)
+        let swipeId = e.currentTarget.id
+        let positon = this.getItemIndex(swipeId)
+        this.$emit('editTap', this, this.msgList[positon])
       },
       onEditMsgLongtap: function (e) {
-        let positon = e.currentTarget.dataset.comIndex
-        this.$emit('editLongTap', this, positon)
+        let swipeId = e.currentTarget.id
+        let positon = this.getItemIndex(swipeId)
+        this.$emit('editLongTap', this, this.msgList[positon])
       }
     }
 
-    /**
-     * 删除item,内部调用(实际是对item 隐藏并不会删除原始数据)
-     */
-    deleteMsgItem(e) {
+    deleteMsgItem(swipeId) {
       let animation = wx.createAnimation({duration: 200})
       animation.height(0).opacity(0).step()
-      this.animationMsgWrapItem(e.currentTarget.dataset.comIndex, animation)
+      this.animationMsgWrapItem(swipeId, animation)
+      let that = this
+      setTimeout(function () {
+        let index = that.getItemIndex(swipeId)
+        that.msgList.splice(index, 1)
+        that.$apply()
+      }, 200)
       this.showState = 0
-      this.setData({scrollY: true})
     }
 
     /**
+     * 获取当前id在list中的位置
+     * @param swipeId
+     * @return number
+     */
+    getItemIndex(swipeId) {
+      let msgList = this.data.msgList
+      for (let i = 0; i < msgList.length; i++) {
+        if (msgList[i].id === swipeId) {
+          return i
+        }
+      }
+      return -1
+    }
+    /**
      * 删除item,外部调用(实际是对item 隐藏并不会删除原始数据)
      */
-    deleteItem(position) {
-      let animation = wx.createAnimation({duration: 200})
-      animation.height(0).opacity(0).step()
-      this.animationMsgWrapItem(position, animation)
-      this.showState = 0
-      this.setData({scrollY: true})
+    deleteItem() {
+      if (this.lastShowMsgId) {
+        this.deleteMsgItem(this.lastShowMsgId)
+      }
     }
 
     /**
      * 关闭item,外部调用(
      */
-    closeItem(position) {
-      this.translateXMsgItem(position, 0, 200)
-      this.showState = 0
+    closeItem() {
+      if (this.lastShowMsgId) {
+        this.translateXMsgItem(this.lastShowMsgId, 0, 200)
+        this.showState = 0
+        this.$apply()
+      }
     }
 
     /**
      * 设置Item向左平移，实现滑动效果
-     * @param positon
+     * @param id
      * @param x
      * @param duration
      */
-    translateXMsgItem(positon, x, duration) {
+    translateXMsgItem(swipeId, x, duration) {
       let animation = wx.createAnimation({duration: duration})
       animation.translateX(x).step()
-      this.animationMsgItem(positon, animation)
+      this.animationMsgItem(swipeId, animation)
     };
 
     /**
@@ -293,24 +319,18 @@
      * @param animation
      */
     animationMsgItem(id, animation) {
-      this.swipeData[id].animation = animation.export()
-      this.$apply()
+      let index = this.getItemIndex(id)
+      this.msgList[index].animation = animation.export()
     };
 
     /**
      * 设置Item被删除时动画
-     * @param id
+     * @param swipeId
      * @param animation
      */
-    animationMsgWrapItem(id, animation) {
-      let item = this.swipeData[id]
-      item.wrapAnimation = animation.export()
-      // 解决如果item中设置了border隐藏item会出现空白的区域问题
-      let that = this
-      setTimeout(function () {
-        item.display = 'display'
-        that.$apply()
-      }, animation.option.transition.duration + 50)
+    animationMsgWrapItem(swipeId, animation) {
+      let index = this.getItemIndex(swipeId)
+      this.msgList[index].wrapAnimation = animation.export()
     };
   }
 </script>

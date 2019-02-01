@@ -37,6 +37,78 @@
     display: flex;
     float: right;
   }
+
+  .box3{
+    margin:0 10rpx;
+    overflow:hidden;
+    border:1px blue solid;
+    position:relative;
+
+  }
+  .box3-content{
+    display: flex;
+    float: right;
+  }
+  .box3-content2{
+    width: 80%;
+    height: 100%;
+    position: absolute;
+    background-color: brown;
+  }
+
+  .swipe-item{
+    margin:30rpx 10rpx;
+    border:1px blue solid;
+    position: relative;
+  }
+  .swipe-content{
+    width: 100%;
+    position: relative;
+    z-index: 10;
+  }
+  .swipe-menu{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: dimgray;
+  }
+  .swipe-menu-content{
+    height:100%;
+    display:flex;
+    float:right;
+  }
+  .swipe-menu-delete {
+    padding: 0 40rpx;
+    height: 100%;
+    background-color: rgb(255, 58, 50);
+    display: flex;
+    align-items: center; // 配个display:flex;实现垂直居中，
+    justify-content: center; // 配个display:flex;实现水平居中
+  }
+  .swipe-menu-text {
+    color: #FFF;
+  }
+  .swipe-menu-edit {
+    padding: 0 40rpx;
+    height: 100%;
+    background-color: rgb(200, 199, 205);
+    display: flex;
+    align-items: center; // 配个display:flex;实现垂直居中，
+    justify-content: center; // 配个display:flex;实现水平居中
+  }
+  .item-content{
+    width: 90%;
+    height: 150rpx;
+    background-color: blue;
+    display: flex;
+    align-items: center;
+    color: white;
+  }
+
+
+
 </style>
 <template>
   <view class="container">
@@ -61,7 +133,36 @@
         </view>
       </view>
     </view>
-    <button style="width: 90%; margin: 20rpx;" @tap="goSwipeDeletePageMode">页面模式</button>
+  <label>高度自适应+上层覆盖</label>
+  <view class="box3">
+    <view class="box3-content">
+      <view class="box-view" style="background-color: red"></view>
+      <view class="box-view" style="background-color: green"></view>
+      <view class="box-view" style="background-color: blue"></view>
+    </view>
+    <view class="box3-content2"></view>
+  </view>
+
+  <view class="swipe-item">
+    <view class="swipe-content">
+      <view class="item-content">
+        我是item内容
+      </view>
+    </view>
+    <view class="swipe-menu">
+      <view class="swipe-menu-content">
+        <view class="swipe-menu-edit swipe-menu-text">编辑</view>
+        <view class="swipe-menu-delete swipe-menu-text">删除</view>
+      </view>
+
+    </view>
+
+  </view>
+
+
+
+
+  <button style="width: 90%; margin: 20rpx;" @tap="goSwipeDeletePageMode">页面模式</button>
     <button style="width: 90%; margin: 20rpx;" @tap="goSwipeDeleteComponentMode">组件模式</button>
 
 </template>

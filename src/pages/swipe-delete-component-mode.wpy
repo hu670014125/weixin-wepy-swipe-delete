@@ -6,18 +6,18 @@
 
   .item {
     width: 100%;
-    height: 150rpx;
     padding: 0 20rpx;
     background-color: white;
     display: flex;
     align-items: center;
+    border-bottom:1px #000 solid;
   }
 
-  .swipeDelete {
-    width: 100%;
-    height: 150rpx;
-    border-bottom: 1rpx #dfdfdf solid;
-  }
+  /*.swipeDelete {*/
+  /*width: 100%;*/
+  /*height: 150rpx;*/
+  /*border-bottom: 1rpx #dfdfdf solid;*/
+  /*}*/
 
   .item image {
     width: 100rpx;
@@ -31,52 +31,29 @@
     font-size: 25rpx;
   }
 
-  .box {
-    border: 1px blue solid;
-    padding: 2rpx;
-    display: flex;
-  }
-
-  .box-view {
-    width: 100rpx;
-    height: 100rpx;
-  }
-
-  .box2 {
-    border: 1px blue solid;
-    height: 104rpx;
-  }
-
-  .box2-content {
-    padding: 2rpx;
-    display: flex;
-    float: right;
-  }
 </style>
 
 <template>
-  <repeat for="{{list}}" key="index" index="index" item="item">
-    <swipeDelete class="swipeDelete"
-                 :swipeData="list"
-                 :position="index"
-                 @deleteTap.user="deleteTap"
-                 @deleteLongTap.user="deleteLongTap"
-                 @editTap.user="editTap"
-                 @editLongTap.user="editLongTap"
-    >
-      <view class="item">
-        <image src="{{item.avatarUrl}}"></image>
-        <view>
-          <view>{{item.title}}</view>
-          <view class="subtitle">{{item.title}}</view>
-        </view>
-      </view>
-    </swipeDelete>
-  </repeat>
+  <swipeDelete :swipeData.sync="list"
+               @deleteTap.user="deleteTap"
+               @deleteLongTap.user="deleteLongTap"
+               @editTap.user="editTap"
+               @editLongTap.user="editLongTap">
+
+    <view class="item" style="background-color: {{item.color}}; height:{{item.height}}rpx;">{{item.userName}}</view>
+
+  </swipeDelete>
+  <!--<view class="item">-->
+  <!--<image src="{{item.avatarUrl}}"></image>-->
+  <!--<view>-->
+  <!--<view>{{item.title}}</view>-->
+  <!--<view class="subtitle">{{item.title}}</view>-->
+  <!--</view>-->
+  <!--</view>-->
 </template>
 <script>
   import wepy from 'wepy'
-  import SwipeDelete from '@/components/wepy-swipe-delete-view'
+  import SwipeDeletePageMode from '@/components/wepy-swipe-delete-view'
 
   export default class AddAddress extends wepy.page {
     config = {
@@ -98,37 +75,37 @@
 
     }
     components = {
-      swipeDelete: SwipeDelete
+      swipeDelete: SwipeDeletePageMode
     }
     methods = {
-      deleteTap(view, posistion) {
-        view.deleteItem(posistion)
+      deleteTap(view) {
+        view.deleteItem()
       },
-      deleteLongTap(view, posistion) {
+      deleteLongTap(view) {
         wx.showModal({
           title: '提示',
           content: '确定要删除吗？',
           success: function (res) {
             if (res.confirm) {
-              view.deleteItem(posistion)
+              view.deleteItem()
             } else {
-              view.closeItem(posistion)
+              view.closeItem()
             }
           }
         })
       },
       editTap(view, posistion) {
-        view.closeItem(posistion)
+        view.closeItem()
       },
-      editLongTap(view, posistion) {
+      editLongTap(view) {
         wx.showModal({
           title: '提示',
           content: '确定要编辑吗？',
           success: function (res) {
             if (res.confirm) {
-              view.deleteItem(posistion)
+              view.deleteItem()
             } else {
-              view.closeItem(posistion)
+              view.closeItem()
             }
           }
         })
@@ -136,12 +113,38 @@
       }
     }
 
+    buildRandomColor() {
+      var r = Math.floor(Math.random() * 256)
+      var g = Math.floor(Math.random() * 256)
+      var b = Math.floor(Math.random() * 256)
+      return 'rgb(' + r + ',' + g + ',' + b + ')'// 所有方法的拼接都可以用ES6新特性`其他字符串{$变量名}`替换
+    }
+
+    buildRandomHeight() {
+      var height = Math.floor(Math.random() * 256)
+      if (height < 50) {
+        return 50
+      } else {
+        return height
+      }
+    }
+
     onLoad(options) {
+      // for (let i = 0; i < 50; i++) {
+      //   this.list.push({
+      //     title: '我是Item' + i + '项',
+      //     avatarUrl: options.avatarUrl
+      //   })
+      // }
       for (let i = 0; i < 50; i++) {
-        this.list.push({
-          title: 'Item' + i,
-          avatarUrl: options.avatarUrl
-        })
+        let msg = {}
+        msg.userName = '' + '用户' + (i + 1)
+        msg.msgText = '您有新的消息'
+        msg.color = this.buildRandomColor()
+        msg.height = this.buildRandomHeight()
+        msg.id = 'id-' + (i + 1)
+        msg.headerImg = 'https://wx.qlogo.cn/mmopen/vi_32/AfAiaRzSwgux8JsMvQV2HRg9biatpKtib3fB7NsSrN3yDPbEeomAcMt5ILsicQ3Ujht6pQSg6ls7WWcsVImAgORMaA/132'
+        this.list.push(msg)
       }
       this.$apply()
     }
