@@ -144,7 +144,6 @@
 
     methods = {
       ontouchstart: function (e) {
-        console.log(e)
         if (this.showState === 1) {
           this.touchStartState = 1
           this.showState = 0
@@ -176,7 +175,6 @@
         }
         // 未触发滑动方向
         if (this.swipeDirection === 0) {
-          console.log(Math.abs(moveY))
           // 触发垂直操作
           if (Math.abs(moveY) > 4) {
             this.swipeDirection = 2
@@ -227,7 +225,6 @@
           this.lastShowMsgId = e.currentTarget.id
           return
         }
-        console.log((this.maxMoveLeft * this.thresholdMoveLeft))
         if (this.moveX < -(this.maxMoveLeft * this.thresholdMoveLeft)) {
           this.moveX = -this.correctMoveLeft
           this.showState = 1
