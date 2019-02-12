@@ -1,7 +1,6 @@
 <style lang="less">
 .container {
   height: 100%;
-  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
@@ -16,8 +15,15 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/index',
-      'pages/swipe-delete-page-mode',
-      'pages/swipe-delete-component-mode'
+      'pages/demo-ui',
+      'pages/swipe-delete-demo1',
+      'pages/swipe-delete-demo2',
+      'pages/swipe-delete-demo3',
+      'pages/swipe-delete-demo4',
+      'pages/swipe-delete-demo5',
+      'pages/swipe-delete-demo6',
+      'pages/swipe-delete-demo7',
+      'pages/swipe-delete-demo8'
     ],
     window: {
       backgroundTextStyle: 'light',

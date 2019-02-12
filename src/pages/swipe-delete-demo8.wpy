@@ -1,0 +1,181 @@
+<style>
+  page {
+    background: #f0f0f5;
+    border-top: 1rpx #dfdfdf solid;
+  }
+
+  .item {
+    height: 150rpx;
+    padding: 0 20rpx;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    border-bottom:1px #c3c3c3 solid;
+  }
+
+
+  .item image {
+    width: 100rpx;
+    height: 100rpx;
+    margin-right: 20rpx;
+    border-radius: 10%;
+  }
+
+  .subtitle {
+    color: blue;
+    font-size: 25rpx;
+  }
+
+</style>
+
+<template>
+  <label>下面的scroll高度为200px</label>
+  <swipeDelete :list.sync="list"
+               :scrollHeight="scrollHeight"
+               @deleteTap.user="deleteTap"
+               @deleteLongTap.user="deleteLongTap"
+               @editTap.user="editTap"
+               @editLongTap.user="editLongTap"
+               @addTap.user="addTap"
+               @addLongTap.user="addLongTap"
+               @markTap.user="markTap"
+               @markLongTap.user="markLongTap">
+    <view class="item">
+      <image src="{{item.headerImg}}"></image>
+      <view>
+        <view>{{item.userName}}</view>
+        <view class="subtitle">{{item.msgText}}</view>
+      </view>
+    </view>
+  </swipeDelete>
+  <label>下面的scroll高度为300px</label>
+  <swipeDelete2 :list.sync="list2"
+               :scrollHeight="scrollHeight2"
+               @deleteTap.user="deleteTap"
+               @deleteLongTap.user="deleteLongTap"
+               @editTap.user="editTap"
+               @editLongTap.user="editLongTap"
+               @addTap.user="addTap"
+               @addLongTap.user="addLongTap"
+               @markTap.user="markTap"
+               @markLongTap.user="markLongTap">
+    <view class="item">
+      <image src="{{item.headerImg}}"></image>
+      <view>
+        <view>{{item.userName}}</view>
+        <view class="subtitle">{{item.msgText}}</view>
+      </view>
+    </view>
+  </swipeDelete2>
+</template>
+<script>
+  import wepy from 'wepy'
+  import SwipeDeletePageMode from '@/components/wepy-swipe-delete-view'
+
+  export default class AddAddress extends wepy.page {
+    config = {
+      navigationBarTitleText: '组件模式-自定义scroll高度'
+    }
+    data = {
+      title: '数据为空!',
+      list: [],
+      list2: [],
+      scrollHeight: 200,
+      scrollHeight2: 300,
+      button: {
+        show: false
+      }
+    }
+    components = {
+      swipeDelete: SwipeDeletePageMode,
+      swipeDelete2: SwipeDeletePageMode
+    }
+    methods = {
+      deleteTap(view) {
+        view.deleteItem()
+      },
+      deleteLongTap(view) {
+        wx.showModal({
+          title: '提示',
+          content: '确定要删除吗？',
+          success: function (res) {
+            if (res.confirm) {
+              view.deleteItem()
+            } else {
+              view.closeItem()
+            }
+          }
+        })
+      },
+      editTap(view, posistion) {
+        view.closeItem()
+      },
+      editLongTap(view) {
+        wx.showModal({
+          title: '提示',
+          content: '确定要编辑吗？',
+          success: function (res) {
+            if (res.confirm) {
+              view.deleteItem()
+            } else {
+              view.closeItem()
+            }
+          }
+        })
+        return true
+      },
+      addTap(view) {
+        view.deleteItem()
+      },
+      addLongTap(view) {
+        wx.showModal({
+          title: '提示',
+          content: '确定要新增吗？',
+          success: function (res) {
+            if (res.confirm) {
+              view.deleteItem()
+            } else {
+              view.closeItem()
+            }
+          }
+        })
+      },
+      markTap(view, posistion) {
+        view.closeItem()
+      },
+      markLongTap(view) {
+        wx.showModal({
+          title: '提示',
+          content: '确定要标记吗？',
+          success: function (res) {
+            if (res.confirm) {
+              view.deleteItem()
+            } else {
+              view.closeItem()
+            }
+          }
+        })
+        return true
+      }
+    }
+    onLoad(options) {
+      for (let i = 0; i < 50; i++) {
+        let msg = {}
+        msg.userName = '' + '用户' + (i + 1)
+        msg.msgText = '您有新的消息'
+        msg.id = 'id-' + (i + 1)
+        msg.headerImg = options.avatarUrl
+        this.list.push(msg)
+      }
+      for (let i = 0; i < 50; i++) {
+        let msg = {}
+        msg.userName = '' + '数据2-用户' + (i + 1)
+        msg.msgText = '数据2-您有新的消息'
+        msg.id = 'id-' + (i + 1)
+        msg.headerImg = options.avatarUrl
+        this.list2.push(msg)
+      }
+      this.$apply()
+    }
+  }
+</script>

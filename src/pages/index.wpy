@@ -2,169 +2,19 @@
   page {
     border-top: 1rpx #cecece solid;
   }
-
-  .userinfo {
-    margin-top: 30rpx;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .userinfo-avatar {
-    width: 80rpx;
-    height: 80rpx;
-    border-radius: 50%;
-  }
-
-  .userinfo-nickname {
-    color: #aaa;
-  }
-  .box{
-    border:1px blue solid;
-    padding: 2rpx;
-    display: flex;
-  }
-  .box-view{
-    width: 100rpx;
-    height: 100rpx;
-  }
-  .box2{
-    border:1px blue solid;
-    height:104rpx;
-  }
-  .box2-content{
-    padding: 2rpx;
-    display: flex;
-    float: right;
-  }
-
-  .box3{
-    margin:0 10rpx;
-    overflow:hidden;
-    border:1px blue solid;
-    position:relative;
-
-  }
-  .box3-content{
-    display: flex;
-    float: right;
-  }
-  .box3-content2{
-    width: 80%;
-    height: 100%;
-    position: absolute;
-    background-color: brown;
-  }
-
-  .swipe-item{
-    margin:30rpx 10rpx;
-    border:1px blue solid;
-    position: relative;
-  }
-  .swipe-content{
-    width: 100%;
-    position: relative;
-    z-index: 10;
-  }
-  .swipe-menu{
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background-color: dimgray;
-  }
-  .swipe-menu-content{
-    height:100%;
-    display:flex;
-    float:right;
-  }
-  .swipe-menu-delete {
-    padding: 0 40rpx;
-    height: 100%;
-    background-color: rgb(255, 58, 50);
-    display: flex;
-    align-items: center; // 配个display:flex;实现垂直居中，
-    justify-content: center; // 配个display:flex;实现水平居中
-  }
-  .swipe-menu-text {
-    color: #FFF;
-  }
-  .swipe-menu-edit {
-    padding: 0 40rpx;
-    height: 100%;
-    background-color: rgb(200, 199, 205);
-    display: flex;
-    align-items: center; // 配个display:flex;实现垂直居中，
-    justify-content: center; // 配个display:flex;实现水平居中
-  }
-  .item-content{
-    width: 90%;
-    height: 150rpx;
-    background-color: blue;
-    display: flex;
-    align-items: center;
-    color: white;
-  }
-
-
-
 </style>
 <template>
   <view class="container">
-    <view class="userinfo" @tap="handleViewTap">
-      <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
-      <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
-    </view>
+  <button style="margin: 20rpx;" @tap="goDemoUI">UI示例</button>
+  <button style=" margin: 20rpx;" @tap="goSwipeDeleteDemo1">page模式</button>
+  <button style=" margin: 20rpx;" @tap="goSwipeDeleteDemo2">组件模式-item高度不固定</button>
+  <button style=" margin: 20rpx;" @tap="goSwipeDeleteDemo3">组件模式-item高度固定</button>
+  <button style=" margin: 20rpx;" @tap="goSwipeDeleteDemo4">组件模式-左边滑动</button>
+  <button style=" margin: 20rpx;" @tap="goSwipeDeleteDemo5">组件模式-左右边滑动</button>
+  <button style=" margin: 20rpx;" @tap="goSwipeDeleteDemo6">组件模式-隐藏部分menu</button>
+  <button style=" margin: 20rpx;" @tap="goSwipeDeleteDemo7">组件模式-自定义menu</button>
+  <button style=" margin: 20rpx;" @tap="goSwipeDeleteDemo8">组件模式-自定义scroll高度</button>
   </view>
-    <label>从左到右有排列</label>
-    <view class="box">
-      <view class="box-view" style="background-color: red"></view>
-      <view class="box-view" style="background-color: green"></view>
-      <view class="box-view" style="background-color: blue"></view>
-    </view>
-    <label>从右到左有排列</label>
-    <view>
-      <view class="box2">
-        <view class="box2-content">
-          <view class="box-view" style="background-color: red"></view>
-          <view class="box-view" style="background-color: green"></view>
-          <view class="box-view" style="background-color: blue"></view>
-        </view>
-      </view>
-    </view>
-  <label>高度自适应+上层覆盖</label>
-  <view class="box3">
-    <view class="box3-content">
-      <view class="box-view" style="background-color: red"></view>
-      <view class="box-view" style="background-color: green"></view>
-      <view class="box-view" style="background-color: blue"></view>
-    </view>
-    <view class="box3-content2"></view>
-  </view>
-
-  <view class="swipe-item">
-    <view class="swipe-content">
-      <view class="item-content">
-        我是item内容
-      </view>
-    </view>
-    <view class="swipe-menu">
-      <view class="swipe-menu-content">
-        <view class="swipe-menu-edit swipe-menu-text">编辑</view>
-        <view class="swipe-menu-delete swipe-menu-text">删除</view>
-      </view>
-
-    </view>
-
-  </view>
-
-
-
-
-  <button style="margin: 20rpx;" @tap="goSwipeDeletePageMode">页面模式</button>
-    <button style=" margin: 20rpx;" @tap="goSwipeDeleteComponentMode">组件模式</button>
-
 </template>
 
 <script>
@@ -184,14 +34,53 @@
     methods = {
       toast() {
       },
-      goSwipeDeletePageMode() {
+      // 跳转到UI示例页面
+      goDemoUI() {
         wx.navigateTo({
-          url: 'swipe-delete-page-mode?avatarUrl=' + this.userInfo.avatarUrl
+          url: 'demo-ui'
         })
       },
-      goSwipeDeleteComponentMode() {
+      // 跳转到页面page模式页面
+      goSwipeDeleteDemo1() {
         wx.navigateTo({
-          url: 'swipe-delete-component-mode?avatarUrl=' + this.userInfo.avatarUrl
+          url: 'swipe-delete-demo1?avatarUrl=' + this.userInfo.avatarUrl
+        })
+      },
+      // 跳转到组件模式页面组件模式-高度不固定
+      goSwipeDeleteDemo2() {
+        wx.navigateTo({
+          url: 'swipe-delete-demo2'
+        })
+      },
+      // 跳转到组件模式页面组件模式-高度不固定
+      goSwipeDeleteDemo3() {
+        wx.navigateTo({
+          url: 'swipe-delete-demo3?avatarUrl=' + this.userInfo.avatarUrl
+        })
+      },
+      goSwipeDeleteDemo4() {
+        wx.navigateTo({
+          url: 'swipe-delete-demo4?avatarUrl=' + this.userInfo.avatarUrl
+        })
+      },
+      goSwipeDeleteDemo5() {
+        wx.navigateTo({
+          url: 'swipe-delete-demo5?avatarUrl=' + this.userInfo.avatarUrl
+        })
+      },
+      goSwipeDeleteDemo6() {
+        wx.navigateTo({
+          url: 'swipe-delete-demo6?avatarUrl=' + this.userInfo.avatarUrl
+        })
+      },
+      goSwipeDeleteDemo7() {
+        wx.navigateTo({
+          url: 'swipe-delete-demo7?avatarUrl=' + this.userInfo.avatarUrl
+        })
+      },
+      goSwipeDeleteDemo8() {
+        wx.navigateTo({
+          url: 'swipe-delete-demo8?avatarUrl=' + this.userInfo.avatarUrl
         })
       }
     }
@@ -200,7 +89,6 @@
       let self = this
       this.$parent.getUserInfo(function (userInfo) {
         if (userInfo) {
-          console.log(userInfo)
           self.userInfo = userInfo
           self.$apply()
         }

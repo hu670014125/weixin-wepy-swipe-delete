@@ -108,7 +108,7 @@
 
   export default class SwipeDeletePageMode extends wepy.page {
     config = {
-      navigationBarTitleText: '侧滑删除-页面模式'
+      navigationBarTitleText: '页面page模式'
     }
     props = {
       swipeData: {

@@ -1,0 +1,162 @@
+<style>
+  page {
+    background: #f0f0f5;
+    border-top: 1rpx #dfdfdf solid;
+  }
+  .item {
+    padding: 0 20rpx;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    border-bottom:1px #d2d2d2 solid;
+  }
+
+</style>
+
+<template>
+  <swipeDelete :list.sync="list"
+               :addButton="button"
+               :markButton="button"
+               @deleteTap.user="deleteTap"
+               @deleteLongTap.user="deleteLongTap"
+               @editTap.user="editTap"
+               @editLongTap.user="editLongTap"
+              >
+
+    <view class="item" style="background-color: {{item.color}}; height:{{item.height}}rpx;">{{item.userName}}</view>
+  </swipeDelete>
+</template>
+<script>
+  import wepy from 'wepy'
+  import SwipeDeleteView from '@/components/wepy-swipe-delete-view'
+
+  export default class AddAddress extends wepy.page {
+    config = {
+      navigationBarTitleText: '组件模式-item高度不固定'
+    }
+    data = {
+      title: '数据为空!',
+      scrollHeight: 200,
+      list: [],
+      button: {
+        show: false
+      }
+
+    }
+    components = {
+      swipeDelete: SwipeDeleteView
+    }
+    methods = {
+      deleteTap(view, item) {
+        console.log(item)
+        view.deleteItem()
+      },
+      deleteLongTap(view, item) {
+        console.log(item)
+        wx.showModal({
+          title: '提示',
+          content: '确定要删除吗？',
+          success: function (res) {
+            if (res.confirm) {
+              view.deleteItem()
+            } else {
+              view.closeItem()
+            }
+          }
+        })
+      },
+      editTap(view, item) {
+        console.log(item)
+        view.closeItem()
+      },
+      editLongTap(view, item) {
+        console.log(item)
+        wx.showModal({
+          title: '提示',
+          content: '确定要编辑吗？',
+          success: function (res) {
+            if (res.confirm) {
+              view.deleteItem()
+            } else {
+              view.closeItem()
+            }
+          }
+        })
+        return true
+      },
+      addTap(view, item) {
+        console.log(item)
+        view.deleteItem()
+      },
+      addLongTap(view, item) {
+        console.log(item)
+        wx.showModal({
+          title: '提示',
+          content: '确定要增加吗？',
+          success: function (res) {
+            if (res.confirm) {
+              view.deleteItem()
+            } else {
+              view.closeItem()
+            }
+          }
+        })
+      },
+      markTap(view, item) {
+        console.log(item)
+        view.closeItem()
+      },
+      markLongTap(view, item) {
+        console.log(item)
+        wx.showModal({
+          title: '提示',
+          content: '确定要吗标记？',
+          success: function (res) {
+            if (res.confirm) {
+              view.deleteItem()
+            } else {
+              view.closeItem()
+            }
+          }
+        })
+        return true
+      }
+    }
+
+    buildRandomColor() {
+      var r = Math.floor(Math.random() * 256)
+      var g = Math.floor(Math.random() * 256)
+      var b = Math.floor(Math.random() * 256)
+      return 'rgb(' + r + ',' + g + ',' + b + ')'// 所有方法的拼接都可以用ES6新特性`其他字符串{$变量名}`替换
+    }
+
+    buildRandomHeight() {
+      var height = Math.floor(Math.random() * 256)
+      if (height < 50) {
+        return 50
+      } else {
+        return height
+      }
+    }
+
+    onLoad(options) {
+      // for (let i = 0; i < 50; i++) {
+      //   this.list.push({
+      //     title: '我是Item' + i + '项',
+      //     avatarUrl: options.avatarUrl
+      //   })
+      // }
+      for (let i = 0; i < 20; i++) {
+        let msg = {}
+        msg.userName = '' + '用户' + (i + 1)
+        msg.msgText = '您有新的消息'
+        msg.color = this.buildRandomColor()
+        msg.height = this.buildRandomHeight()
+        msg.id = 'id-' + (i + 1)
+        msg.headerImg = 'https://wx.qlogo.cn/mmopen/vi_32/AfAiaRzSwgux8JsMvQV2HRg9biatpKtib3fB7NsSrN3yDPbEeomAcMt5ILsicQ3Ujht6pQSg6ls7WWcsVImAgORMaA/132'
+        this.list.push(msg)
+      }
+      this.$apply()
+    }
+  }
+</script>

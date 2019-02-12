@@ -5,19 +5,14 @@
   }
 
   .item {
-    width: 100%;
+    height: 150rpx;
     padding: 0 20rpx;
     background-color: white;
     display: flex;
     align-items: center;
-    border-bottom:1px #000 solid;
+    border-bottom:1px #c3c3c3 solid;
   }
 
-  /*.swipeDelete {*/
-  /*width: 100%;*/
-  /*height: 150rpx;*/
-  /*border-bottom: 1rpx #dfdfdf solid;*/
-  /*}*/
 
   .item image {
     width: 100rpx;
@@ -34,22 +29,22 @@
 </style>
 
 <template>
-  <swipeDelete :swipeData.sync="list"
+  <swipeDelete :list.sync="list"
+               :addButton="button"
+               :markButton="button"
                @deleteTap.user="deleteTap"
                @deleteLongTap.user="deleteLongTap"
                @editTap.user="editTap"
                @editLongTap.user="editLongTap">
-
-    <view class="item" style="background-color: {{item.color}}; height:{{item.height}}rpx;">{{item.userName}}</view>
-
+    <view class="item">
+      <image src="{{item.headerImg}}"></image>
+      <view>
+        <view>{{item.userName}}</view>
+        <view class="subtitle">{{item.msgText}}</view>
+      </view>
+    </view>
   </swipeDelete>
-  <!--<view class="item">-->
-  <!--<image src="{{item.avatarUrl}}"></image>-->
-  <!--<view>-->
-  <!--<view>{{item.title}}</view>-->
-  <!--<view class="subtitle">{{item.title}}</view>-->
-  <!--</view>-->
-  <!--</view>-->
+
 </template>
 <script>
   import wepy from 'wepy'
@@ -57,11 +52,14 @@
 
   export default class AddAddress extends wepy.page {
     config = {
-      navigationBarTitleText: '侧滑删除-组件模式'
+      navigationBarTitleText: '组件模式-item高度固定'
     }
     data = {
       title: '数据为空!',
       list: [],
+      button: {
+        show: false
+      },
       deleteOptions: {
         show: true,
         backgroundColor: '#FF0',
@@ -72,7 +70,6 @@
         backgroundColor: '#00F',
         text: '就是编辑'
       }
-
     }
     components = {
       swipeDelete: SwipeDeletePageMode
@@ -112,38 +109,13 @@
         return true
       }
     }
-
-    buildRandomColor() {
-      var r = Math.floor(Math.random() * 256)
-      var g = Math.floor(Math.random() * 256)
-      var b = Math.floor(Math.random() * 256)
-      return 'rgb(' + r + ',' + g + ',' + b + ')'// 所有方法的拼接都可以用ES6新特性`其他字符串{$变量名}`替换
-    }
-
-    buildRandomHeight() {
-      var height = Math.floor(Math.random() * 256)
-      if (height < 50) {
-        return 50
-      } else {
-        return height
-      }
-    }
-
     onLoad(options) {
-      // for (let i = 0; i < 50; i++) {
-      //   this.list.push({
-      //     title: '我是Item' + i + '项',
-      //     avatarUrl: options.avatarUrl
-      //   })
-      // }
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < 50; i++) {
         let msg = {}
         msg.userName = '' + '用户' + (i + 1)
         msg.msgText = '您有新的消息'
-        msg.color = this.buildRandomColor()
-        msg.height = this.buildRandomHeight()
         msg.id = 'id-' + (i + 1)
-        msg.headerImg = 'https://wx.qlogo.cn/mmopen/vi_32/AfAiaRzSwgux8JsMvQV2HRg9biatpKtib3fB7NsSrN3yDPbEeomAcMt5ILsicQ3Ujht6pQSg6ls7WWcsVImAgORMaA/132'
+        msg.headerImg = options.avatarUrl
         this.list.push(msg)
       }
       this.$apply()

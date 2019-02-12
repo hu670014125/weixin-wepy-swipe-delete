@@ -3,7 +3,6 @@
     position: relative;
   }
   .swipe-content {
-    width: 100%;
     position: relative;
     z-index: 10;
   }
@@ -15,10 +14,15 @@
     bottom: 0;
     background-color: #dfdfdf;
   }
-  .swipe-menu-content {
+  .swipe-menu-right-content {
     height: 100%;
     display: flex;
     float: right;
+  }
+  .swipe-menu-left-content{
+    height:100%;
+    display:flex;
+    float:left;
   }
   .swipe-menu-delete {
     padding: 0 40rpx;
@@ -28,9 +32,6 @@
     align-items: center; // 配个display:flex;实现垂直居中，
     justify-content: center; // 配个display:flex;实现水平居中
   }
-  .swipe-menu-text {
-    color: #FFF;
-  }
   .swipe-menu-edit {
     padding: 0 40rpx;
     height: 100%;
@@ -39,12 +40,28 @@
     align-items: center; // 配个display:flex;实现垂直居中，
     justify-content: center; // 配个display:flex;实现水平居中
   }
-  .display {
-    display: none !important;
+  .swipe-menu-add {
+    padding: 0 40rpx;
+    height: 100%;
+    background-color: rgb(70, 165, 63);
+    display: flex;
+    align-items: center; // 配个display:flex;实现垂直居中，
+    justify-content: center; // 配个display:flex;实现水平居中
+  }
+  .swipe-menu-mark {
+    padding: 0 40rpx;
+    height: 100%;
+    background-color: orange;
+    display: flex;
+    align-items: center; // 配个display:flex;实现垂直居中，
+    justify-content: center; // 配个display:flex;实现水平居中
+  }
+  .swipe-menu-text {
+    color: #FFF;
   }
 </style>
 <template>
-  <scroll-view style='height:600px;' scroll-y='{{scrollY}}'>
+  <scroll-view style='height:{{scrollHeight}}px;' scroll-y='{{scrollY}}'>
     <view wx:for="{{msgList}}" wx:key="id" class="swipe-item" animation='{{item.wrapAnimation}}'>
       <view id="{{item['swipe-delete-id']}}"
             class='swipe-content'
@@ -55,21 +72,33 @@
         <slot></slot>
       </view>
       <view class='swipe-menu'>
-        <view class="swipe-menu-content">
+        <view class="swipe-menu-right-content">
           <view class='swipe-menu-edit'
                 id="{{item['swipe-delete-id']}}"
-                style="background-color: {{editOptions.backgroundColor}}; display: {{editOptions.show ? 'flex':'none'}};"
-                @tap.stop='onEditMsgTap'
-                @longpress='onEditMsgLongtap'>
-            <view class="swipe-menu-text">{{editOptions.text}}</view>
+                style="background-color: {{editButton.backgroundColor}}; display: {{editButton.show ? 'flex':'none'}};"
+                @tap.stop='onEditButtonTap'
+                @longpress='onEditButtonLongtap'>
+            <view class="swipe-menu-text">{{editButton.text}}</view>
           </view>
           <view class='swipe-menu-delete'
                 id="{{item['swipe-delete-id']}}"
-                style="background-color: {{deleteOptions.backgroundColor}}; display: {{deleteOptions.show ? 'flex':'none'}};"
-                @tap.stop='onDeleteMsgTap'
-                @longpress='onDeleteMsgLongtap'>
-            <view class="swipe-menu-text">{{deleteOptions.text}}</view>
+                style="background-color: {{deleteButton.backgroundColor}}; display: {{deleteButton.show ? 'flex':'none'}};"
+                @tap.stop='onDeleteButtonTap'
+                @longpress='onDeleteButtonLongtap'>
+            <view class="swipe-menu-text">{{deleteButton.text}}</view>
           </view>
+        </view>
+        <view class="swipe-menu-left-content">
+          <view class="swipe-menu-add swipe-menu-text"
+                id="{{item['swipe-delete-id']}}"
+                style="background-color: {{addButton.backgroundColor}}; display: {{addButton.show ? 'flex':'none'}};"
+                @tap.stop='onAddButtonTap'
+                @longpress='onAddButtonLongtap'>{{addButton.text}}</view>
+          <view class="swipe-menu-mark swipe-menu-text"
+                id="{{item['swipe-delete-id']}}"
+                style="background-color: {{markButton.backgroundColor}}; display: {{markButton.show ? 'flex':'none'}};"
+                @tap.stop='onMarkButtonTap'
+                @longpress='onMarkButtonLongtap'>{{markButton.text}}</view>
         </view>
       </view>
     </view>
@@ -78,9 +107,9 @@
 <script>
   import wepy from 'wepy'
 
-  export default class SwipeDeletePageMode extends wepy.component {
+  export default class SwipeDeleteView extends wepy.component {
     props = {
-      deleteOptions: {
+      deleteButton: {
         type: Object,
         default: {
           text: '删除',
@@ -88,7 +117,7 @@
           show: true
         }
       },
-      editOptions: {
+      editButton: {
         type: Object,
         default: {
           text: '编辑',
@@ -96,10 +125,27 @@
           show: true
         }
       },
-      position: {
+      addButton: {
+        type: Object,
+        default: {
+          text: '添加',
+          backgroundColor: '#46a53f',
+          show: true
+        }
+      },
+      markButton: {
+        type: Object,
+        default: {
+          text: '标记',
+          backgroundColor: '#FFA500',
+          show: true
+        }
+      },
+      scrollHeight: {
+        type: Number,
         default: 0
       },
-      swipeData: {
+      list: {
         type: Object,
         default: []
       }
@@ -111,7 +157,9 @@
       swipeCheckX: 35, // 激活检测滑动的阈值
       swipeCheckState: 0, // 0未激活 1激活
       maxMoveLeft: 0, // 消息列表项最大左滑距离+menu的宽度
-      correctMoveLeft: 20, // 显示菜单时的左滑距离
+      maxMoveRight: 0, // 消息列表项最大右滑距离+menu的宽度
+      correctMoveLeft: 0, // 显示右边菜单的总宽度
+      correctMoveRight: 0, // 显示右边菜单的总宽度
       thresholdMoveLeft: 0.2, // 左滑阈值，超过则显示菜单(30%)
       lastShowMsgId: '', // 记录上次显示菜单的消息id
       moveX: 0,  // 记录平移距离
@@ -123,25 +171,46 @@
         position: 0
       }
     }
-
     onLoad() {
-      this.msgList = this.swipeData
+      let that = this
+      let systemInfo = wepy.getSystemInfoSync()
+      // scroll的高度为0时，我们为屏幕的高度
+      if (this.scrollHeight <= 0) {
+        that.scrollHeight = systemInfo.windowHeight
+      }
+      that.msgList = that.list
+      // 为每个数据项添加一个id，后面通过这个id来操控UI
       for (let i = 0; i < this.msgList.length; i++) {
         this.msgList[i]['swipe-delete-id'] = 'swipe-delete-id-' + i
       }
-      let that = this
       that.$apply()
-      // 根据menu的宽度计算item最大左滑的距离，
+      // 根据右边menu的宽度计算item最大左滑的距离，
       wx.createSelectorQuery().select('.swipe-menu-edit').boundingClientRect(function (rect) {
-        that.correctMoveLeft += rect.width
+        that.correctMoveRight += rect.width
       }).exec()
       wx.createSelectorQuery().select('.swipe-menu-delete').boundingClientRect(function (rect) {
+        that.correctMoveRight += rect.width
+        // 最大左滑距离是menu总长度的+10像素,如果左边的menu总长度为0，即都不显示按钮则不可以左滑
+        if (that.correctMoveRight <= 0) {
+          that.maxMoveLeft = 0
+        } else {
+          that.maxMoveLeft = that.correctMoveRight + 10
+        }
+      }).exec()
+      // 根据右边menu的宽度计算item最大左滑的距离，
+      wx.createSelectorQuery().select('.swipe-menu-add').boundingClientRect(function (rect) {
         that.correctMoveLeft += rect.width
-        // 最大左滑距离是menu总长度的+10像素
-        that.maxMoveLeft = that.correctMoveLeft + 10
+      }).exec()
+      wx.createSelectorQuery().select('.swipe-menu-mark').boundingClientRect(function (rect) {
+        that.correctMoveLeft += rect.width
+        // 最大右滑距离是menu总长度的+10像素,如果左边的menu总长度为0，即都不显示按钮则不可以左滑
+        if (that.correctMoveLeft <= 0) {
+          that.maxMoveRight = 0
+        } else {
+          that.maxMoveRight = that.correctMoveLeft + 10
+        }
       }).exec()
     }
-
     methods = {
       ontouchstart: function (e) {
         if (this.showState === 1) {
@@ -157,7 +226,6 @@
         if (this.firstTouchX > this.swipeCheckX) {
           this.swipeCheckState = 1
         }
-        this.lastMoveTime = e.timeStamp
       },
       ontouchmove: function (e) {
         if (this.swipeCheckState === 0) {
@@ -187,21 +255,24 @@
             return
           }
         }
-        // 禁用垂直滚动
-        if (this.data.scrollY) {
+        // 判断当前的item滑动方向，如果moveX >0 这想有滑动，反正向左滑动
+        if (moveX < 0) {
+          // 检测最大左滑距离
+          if (moveX < -this.maxMoveLeft) {
+            moveX = -this.maxMoveLeft
+          }
+        } else {
+          if (moveX > this.maxMoveRight) {
+            moveX = this.maxMoveRight
+          }
         }
-
-        this.lastMoveTime = e.timeStamp
-        // 处理边界情况
-        if (moveX > 0) {
-          moveX = 0
-        }
-        // 检测最大左滑距离
-        if (moveX < -this.maxMoveLeft) {
-          moveX = -this.maxMoveLeft
+        this.scrollY = false
+        // 如果上一次和本次位置为发送变化就不执行平移
+        if (this.moveX === moveX) {
+          return
         }
         this.moveX = moveX
-        this.translateXMsgItem(e.currentTarget.id, moveX, 0)
+        this.translateXMsgItem(e.currentTarget.id, this.moveX, 0)
       },
       ontouchend: function (e) {
         this.swipeCheckState = 0
@@ -220,41 +291,74 @@
           // 不显示菜单状态下,激活垂直滚动
           return
         }
-        if (this.moveX === this.correctMoveLeft) {
+        if (this.moveX === this.correctMoveRight) {
           this.showState = 1
           this.lastShowMsgId = e.currentTarget.id
           return
         }
-        if (this.moveX < -(this.maxMoveLeft * this.thresholdMoveLeft)) {
-          this.moveX = -this.correctMoveLeft
-          this.showState = 1
-          this.lastShowMsgId = e.currentTarget.id
+
+        // 判断当前的item滑动方向，如果moveX >0 这想有滑动，反正向左滑动
+        if (this.moveX < 0) {
+          if (this.moveX < -(this.maxMoveLeft * this.thresholdMoveLeft)) {
+            this.moveX = -this.correctMoveRight
+            this.showState = 1
+            this.lastShowMsgId = e.currentTarget.id
+          } else {
+            this.moveX = 0
+            this.showState = 0
+          }
         } else {
-          this.moveX = 0
-          this.showState = 0
-          // 不显示菜单,激活垂直滚动
+          if (this.moveX > (this.maxMoveRight * this.thresholdMoveLeft)) {
+            this.moveX = this.correctMoveLeft
+            this.showState = 1
+            this.lastShowMsgId = e.currentTarget.id
+          } else {
+            this.moveX = 0
+            this.showState = 0
+          }
         }
+        this.scrollY = true
         this.translateXMsgItem(e.currentTarget.id, this.moveX, 200)
       },
-      onDeleteMsgTap: function (e) {
+      onDeleteButtonTap: function (e) {
         let swipeId = e.currentTarget.id
         let positon = this.getItemIndex(swipeId)
         this.$emit('deleteTap', this, this.msgList[positon])
       },
-      onDeleteMsgLongtap: function (e) {
+      onDeleteButtonLongtap: function (e) {
         let swipeId = e.currentTarget.id
         let positon = this.getItemIndex(swipeId)
         this.$emit('deleteLongTap', this, this.msgList[positon])
       },
-      onEditMsgTap: function (e) {
+      onEditButtonTap: function (e) {
         let swipeId = e.currentTarget.id
         let positon = this.getItemIndex(swipeId)
         this.$emit('editTap', this, this.msgList[positon])
       },
-      onEditMsgLongtap: function (e) {
+      onEditButtonLongtap: function (e) {
         let swipeId = e.currentTarget.id
         let positon = this.getItemIndex(swipeId)
         this.$emit('editLongTap', this, this.msgList[positon])
+      },
+      onAddButtonTap: function (e) {
+        let swipeId = e.currentTarget.id
+        let positon = this.getItemIndex(swipeId)
+        this.$emit('addTap', this, this.msgList[positon])
+      },
+      onAddButtonLongtap: function (e) {
+        let swipeId = e.currentTarget.id
+        let positon = this.getItemIndex(swipeId)
+        this.$emit('addLongTap', this, this.msgList[positon])
+      },
+      onMarkButtonTap: function (e) {
+        let swipeId = e.currentTarget.id
+        let positon = this.getItemIndex(swipeId)
+        this.$emit('markTap', this, this.msgList[positon])
+      },
+      onMarkButtonLongtap: function (e) {
+        let swipeId = e.currentTarget.id
+        let positon = this.getItemIndex(swipeId)
+        this.$emit('markLongTap', this, this.msgList[positon])
       }
     }
 
@@ -307,7 +411,7 @@
 
     /**
      * 设置Item向左平移，实现滑动效果
-     * @param id
+     * @param swipeId
      * @param x
      * @param duration
      */
@@ -318,7 +422,7 @@
     };
     /**
      * 设置Item左滑的动画
-     * @param id
+     * @param swipeId
      * @param animation
      */
     animationMsgItem(swipeId, animation) {
