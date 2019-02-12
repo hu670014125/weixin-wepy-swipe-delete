@@ -140,20 +140,13 @@
     }
 
     onLoad(options) {
-      // for (let i = 0; i < 50; i++) {
-      //   this.list.push({
-      //     title: '我是Item' + i + '项',
-      //     avatarUrl: options.avatarUrl
-      //   })
-      // }
       for (let i = 0; i < 20; i++) {
         let msg = {}
         msg.userName = '' + '用户' + (i + 1)
         msg.msgText = '您有新的消息'
         msg.color = this.buildRandomColor()
         msg.height = this.buildRandomHeight()
-        msg.id = 'id-' + (i + 1)
-        msg.headerImg = 'https://wx.qlogo.cn/mmopen/vi_32/AfAiaRzSwgux8JsMvQV2HRg9biatpKtib3fB7NsSrN3yDPbEeomAcMt5ILsicQ3Ujht6pQSg6ls7WWcsVImAgORMaA/132'
+        msg.headerImg = options.avatarUrl
         this.list.push(msg)
       }
       this.$apply()

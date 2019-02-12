@@ -181,7 +181,13 @@
       that.msgList = that.list
       // 为每个数据项添加一个id，后面通过这个id来操控UI
       for (let i = 0; i < this.msgList.length; i++) {
-        this.msgList[i]['swipe-delete-id'] = 'swipe-delete-id-' + i
+        let itemData = this.msgList[i]
+        // 判断当前list（原始数据）中的每一项是否存在id这个字段，如果没有就自动加上
+        // 如果不加上id这个字段数据列表就会错乱，目前不知道什么原因引起的
+        if (!itemData.id) {
+          itemData.id = i
+        }
+        itemData['swipe-delete-id'] = 'swipe-delete-id-' + i
       }
       that.$apply()
       // 根据右边menu的宽度计算item最大左滑的距离，

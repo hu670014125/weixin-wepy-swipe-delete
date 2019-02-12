@@ -114,7 +114,6 @@
         let msg = {}
         msg.userName = '' + '用户' + (i + 1)
         msg.msgText = '您有新的消息'
-        msg.id = 'id-' + (i + 1)
         msg.headerImg = options.avatarUrl
         this.list.push(msg)
       }
