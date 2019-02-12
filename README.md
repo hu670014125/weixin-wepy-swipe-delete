@@ -13,13 +13,6 @@
 - 自定义menu ：如果默认的menu样式不喜欢可以自定义，也可以显示或者隐藏指定的menu。
 - 左右滑动：支持左右滑动也可以设置只左右或者右滑。
 
-## 如何使用
-目前支持两种使用模式：
-#### 1.page页面模式
-```javascript 1.8
-优点：可定制化高，扩展性强。
-缺点：集成复杂，代码复用性差。
-```
 #### 效果如下：
 ![image](https://raw.githubusercontent.com/hu670014125/weixin-wepy-swipe-delete/master/screenshots/screenshots1.gif)
 ![image](https://raw.githubusercontent.com/hu670014125/weixin-wepy-swipe-delete/master/screenshots/screenshots2.gif)
@@ -30,6 +23,14 @@
 ![image](https://raw.githubusercontent.com/hu670014125/weixin-wepy-swipe-delete/master/screenshots/screenshots7.gif)
 ![image](https://raw.githubusercontent.com/hu670014125/weixin-wepy-swipe-delete/master/screenshots/screenshots8.gif)
 
+
+## 如何使用
+目前支持两种使用模式：
+#### 1.page页面模式
+```javascript 1.8
+优点：可定制化高，扩展性强。
+缺点：集成复杂，代码复用性差。
+```
 
 #### 2.component 组件模式
 ```javascript 1.8
