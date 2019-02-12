@@ -22,6 +22,14 @@
 ```
 #### 效果如下：
 ![image](https://raw.githubusercontent.com/hu670014125/weixin-wepy-swipe-delete/master/screenshots/screenshots1.gif)
+![image](https://raw.githubusercontent.com/hu670014125/weixin-wepy-swipe-delete/master/screenshots/screenshots2.gif)
+![image](https://raw.githubusercontent.com/hu670014125/weixin-wepy-swipe-delete/master/screenshots/screenshots3.gif)
+![image](https://raw.githubusercontent.com/hu670014125/weixin-wepy-swipe-delete/master/screenshots/screenshots4.gif)
+![image](https://raw.githubusercontent.com/hu670014125/weixin-wepy-swipe-delete/master/screenshots/screenshots5.gif)
+![image](https://raw.githubusercontent.com/hu670014125/weixin-wepy-swipe-delete/master/screenshots/screenshots6.gif)
+![image](https://raw.githubusercontent.com/hu670014125/weixin-wepy-swipe-delete/master/screenshots/screenshots7.gif)
+![image](https://raw.githubusercontent.com/hu670014125/weixin-wepy-swipe-delete/master/screenshots/screenshots8.gif)
+
 
 #### 2.component 组件模式
 ```javascript 1.8
