@@ -172,6 +172,12 @@
       }
     }
     onLoad() {
+      this.internalInit()
+    }
+    /**
+     * 内部初始化
+     */
+    internalInit() {
       let that = this
       let systemInfo = wepy.getSystemInfoSync()
       // scroll的高度为0时，我们为屏幕的高度
@@ -192,10 +198,14 @@
       that.$apply()
       // 根据右边menu的宽度计算item最大左滑的距离，
       wx.createSelectorQuery().select('.swipe-menu-edit').boundingClientRect(function (rect) {
-        that.correctMoveRight += rect.width
+        if (rect) {
+          that.correctMoveRight += rect.width
+        }
       }).exec()
       wx.createSelectorQuery().select('.swipe-menu-delete').boundingClientRect(function (rect) {
-        that.correctMoveRight += rect.width
+        if (rect) {
+          that.correctMoveRight += rect.width
+        }
         // 最大左滑距离是menu总长度的+10像素,如果左边的menu总长度为0，即都不显示按钮则不可以左滑
         if (that.correctMoveRight <= 0) {
           that.maxMoveLeft = 0
@@ -205,10 +215,14 @@
       }).exec()
       // 根据右边menu的宽度计算item最大左滑的距离，
       wx.createSelectorQuery().select('.swipe-menu-add').boundingClientRect(function (rect) {
-        that.correctMoveLeft += rect.width
+        if (rect) {
+          that.correctMoveLeft += rect.width
+        }
       }).exec()
       wx.createSelectorQuery().select('.swipe-menu-mark').boundingClientRect(function (rect) {
-        that.correctMoveLeft += rect.width
+        if (rect) {
+          that.correctMoveLeft += rect.width
+        }
         // 最大右滑距离是menu总长度的+10像素,如果左边的menu总长度为0，即都不显示按钮则不可以左滑
         if (that.correctMoveLeft <= 0) {
           that.maxMoveRight = 0
@@ -216,6 +230,13 @@
           that.maxMoveRight = that.correctMoveLeft + 10
         }
       }).exec()
+    }
+
+    /**
+     * 更新组件（外部调用）
+     */
+    update() {
+      this.internalInit()
     }
     methods = {
       ontouchstart: function (e) {

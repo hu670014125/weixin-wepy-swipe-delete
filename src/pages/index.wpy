@@ -14,6 +14,7 @@
   <button style=" margin: 20rpx;" @tap="goSwipeDeleteDemo6">组件模式-隐藏部分menu</button>
   <button style=" margin: 20rpx;" @tap="goSwipeDeleteDemo7">组件模式-自定义menu</button>
   <button style=" margin: 20rpx;" @tap="goSwipeDeleteDemo8">组件模式-自定义scroll高度</button>
+  <button style=" margin: 20rpx;" @tap="goSwipeDeleteDemo9">组件模式-异步加载</button>
   </view>
 </template>
 
@@ -81,6 +82,11 @@
       goSwipeDeleteDemo8() {
         wx.navigateTo({
           url: 'swipe-delete-demo8?avatarUrl=' + this.userInfo.avatarUrl
+        })
+      },
+      goSwipeDeleteDemo9() {
+        wx.navigateTo({
+          url: 'swipe-delete-demo9'
         })
       }
     }

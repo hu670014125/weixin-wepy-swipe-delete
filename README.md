@@ -124,6 +124,36 @@ methods = {
  deleteItem | 删除当前操作的item(原始数据+view)都会被删除|不需要参数
  closeItem | 关闭当前操作的item，原始数据不变|不需要参数
  
+ ### 网络异步加载更新
+ 
+ 如果使用的网络异步加载完成以后，还需要更新下组件，不然会出现无法侧滑的情况。
+ 
+ - 导致原因：原始数据更新以后组件内部无法监听到，这样就不能获取到左右menu的宽度，所以不能侧滑
+ - 解决办法：this.$invoke('swipeDelete', 'update');  swipeDelete必须和 components = {swipeDelete: SwipeDeleteView} 同名。
+ 
+ 代码如下：
+ 
+ ```javascript
+ // 模拟网络加载延迟2秒钟
+    let that = this
+      setTimeout(function () {
+        for (let i = 0; i < 20; i++) {
+          let msg = {}
+          msg.userName = '' + '用户' + (i + 1)
+          msg.msgText = '您有新的消息'
+          msg.color = that.buildRandomColor()
+          msg.height = that.buildRandomHeight()
+          msg.headerImg = options.avatarUrl
+          that.list.push(msg)
+        }
+        wx.hideLoading()
+        // 更新组件
+        that.$invoke('swipeDelete', 'update')
+        that.$apply()
+      }, 2000)
+```
+ 
+ 
  如果在使用的过程中遇到什么问题可以告诉我，我及时修复。
  
  邮箱：hu670014125@163.com

@@ -23,7 +23,8 @@ export default class extends wepy.app {
       'pages/swipe-delete-demo5',
       'pages/swipe-delete-demo6',
       'pages/swipe-delete-demo7',
-      'pages/swipe-delete-demo8'
+      'pages/swipe-delete-demo8',
+      'pages/swipe-delete-demo9'
     ],
     window: {
       backgroundTextStyle: 'light',
