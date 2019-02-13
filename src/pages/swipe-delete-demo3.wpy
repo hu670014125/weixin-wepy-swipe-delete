@@ -47,13 +47,13 @@
 
 </template>
 <script>
-  import wepy from 'wepy'
-  import SwipeDeletePageMode from '@/components/wepy-swipe-delete-view'
+  import wepy from 'wepy';
+  import SwipeDeletePageMode from '@/components/wepy-swipe-delete-view';
 
   export default class AddAddress extends wepy.page {
     config = {
       navigationBarTitleText: '组件模式-item高度固定'
-    }
+    };
     data = {
       title: '数据为空!',
       list: [],
@@ -70,13 +70,13 @@
         backgroundColor: '#00F',
         text: '就是编辑'
       }
-    }
+    };
     components = {
       swipeDelete: SwipeDeletePageMode
-    }
+    };
     methods = {
       deleteTap(view) {
-        view.deleteItem()
+        view.deleteItem();
       },
       deleteLongTap(view) {
         wx.showModal({
@@ -84,15 +84,15 @@
           content: '确定要删除吗？',
           success: function (res) {
             if (res.confirm) {
-              view.deleteItem()
+              view.deleteItem();
             } else {
-              view.closeItem()
+              view.closeItem();
             }
           }
-        })
+        });
       },
       editTap(view, posistion) {
-        view.closeItem()
+        view.closeItem();
       },
       editLongTap(view) {
         wx.showModal({
@@ -100,24 +100,24 @@
           content: '确定要编辑吗？',
           success: function (res) {
             if (res.confirm) {
-              view.deleteItem()
+              view.deleteItem();
             } else {
-              view.closeItem()
+              view.closeItem();
             }
           }
-        })
-        return true
+        });
+        return true;
       }
-    }
+    };
     onLoad(options) {
       for (let i = 0; i < 50; i++) {
-        let msg = {}
-        msg.userName = '' + '用户' + (i + 1)
-        msg.msgText = '您有新的消息'
-        msg.headerImg = options.avatarUrl
-        this.list.push(msg)
+        let msg = {};
+        msg.userName = '' + '用户' + (i + 1);
+        msg.msgText = '您有新的消息';
+        msg.headerImg = options.avatarUrl;
+        this.list.push(msg);
       }
-      this.$apply()
+      this.$apply();
     }
   }
 </script>

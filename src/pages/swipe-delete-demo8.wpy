@@ -69,13 +69,13 @@
   </swipeDelete2>
 </template>
 <script>
-  import wepy from 'wepy'
-  import SwipeDeletePageMode from '@/components/wepy-swipe-delete-view'
+  import wepy from 'wepy';
+  import SwipeDeletePageMode from '@/components/wepy-swipe-delete-view';
 
   export default class AddAddress extends wepy.page {
     config = {
       navigationBarTitleText: '组件模式-自定义scroll高度'
-    }
+    };
     data = {
       title: '数据为空!',
       list: [],
@@ -85,14 +85,14 @@
       button: {
         show: false
       }
-    }
+    };
     components = {
       swipeDelete: SwipeDeletePageMode,
       swipeDelete2: SwipeDeletePageMode
-    }
+    };
     methods = {
       deleteTap(view) {
-        view.deleteItem()
+        view.deleteItem();
       },
       deleteLongTap(view) {
         wx.showModal({
@@ -100,15 +100,15 @@
           content: '确定要删除吗？',
           success: function (res) {
             if (res.confirm) {
-              view.deleteItem()
+              view.deleteItem();
             } else {
-              view.closeItem()
+              view.closeItem();
             }
           }
-        })
+        });
       },
       editTap(view, posistion) {
-        view.closeItem()
+        view.closeItem();
       },
       editLongTap(view) {
         wx.showModal({
@@ -116,16 +116,16 @@
           content: '确定要编辑吗？',
           success: function (res) {
             if (res.confirm) {
-              view.deleteItem()
+              view.deleteItem();
             } else {
-              view.closeItem()
+              view.closeItem();
             }
           }
-        })
-        return true
+        });
+        return true;
       },
       addTap(view) {
-        view.deleteItem()
+        view.deleteItem();
       },
       addLongTap(view) {
         wx.showModal({
@@ -133,15 +133,15 @@
           content: '确定要新增吗？',
           success: function (res) {
             if (res.confirm) {
-              view.deleteItem()
+              view.deleteItem();
             } else {
-              view.closeItem()
+              view.closeItem();
             }
           }
-        })
+        });
       },
       markTap(view, posistion) {
-        view.closeItem()
+        view.closeItem();
       },
       markLongTap(view) {
         wx.showModal({
@@ -149,33 +149,33 @@
           content: '确定要标记吗？',
           success: function (res) {
             if (res.confirm) {
-              view.deleteItem()
+              view.deleteItem();
             } else {
-              view.closeItem()
+              view.closeItem();
             }
           }
-        })
-        return true
+        });
+        return true;
       }
-    }
+    };
     onLoad(options) {
       for (let i = 0; i < 50; i++) {
-        let msg = {}
-        msg.userName = '' + '用户' + (i + 1)
-        msg.msgText = '您有新的消息'
-        msg.id = 'id-' + (i + 1)
-        msg.headerImg = options.avatarUrl
-        this.list.push(msg)
+        let msg = {};
+        msg.userName = '' + '用户' + (i + 1);
+        msg.msgText = '您有新的消息';
+        msg.id = 'id-' + (i + 1);
+        msg.headerImg = options.avatarUrl;
+        this.list.push(msg);
       }
       for (let i = 0; i < 50; i++) {
-        let msg = {}
-        msg.userName = '' + '数据2-用户' + (i + 1)
-        msg.msgText = '数据2-您有新的消息'
-        msg.id = 'id-' + (i + 1)
-        msg.headerImg = options.avatarUrl
-        this.list2.push(msg)
+        let msg = {};
+        msg.userName = '' + '数据2-用户' + (i + 1);
+        msg.msgText = '数据2-您有新的消息';
+        msg.id = 'id-' + (i + 1);
+        msg.headerImg = options.avatarUrl;
+        this.list2.push(msg);
       }
-      this.$apply()
+      this.$apply();
     }
   }
 </script>

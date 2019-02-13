@@ -105,7 +105,7 @@
   </scroll-view>
 </template>
 <script>
-  import wepy from 'wepy'
+  import wepy from 'wepy';
 
   export default class SwipeDeleteView extends wepy.component {
     props = {
@@ -149,7 +149,7 @@
         type: Object,
         default: []
       }
-    }
+    };
     data = {
       msgList: [],
       height: 0,
@@ -170,236 +170,236 @@
         swipeId: 'swipe-delete-id-0',
         position: 0
       }
-    }
+    };
     onLoad() {
-      this.internalInit()
+      this.internalInit();
     }
     /**
      * 内部初始化
      */
     internalInit() {
-      let that = this
-      let systemInfo = wepy.getSystemInfoSync()
+      let that = this;
+      let systemInfo = wepy.getSystemInfoSync();
       // scroll的高度为0时，我们为屏幕的高度
       if (this.scrollHeight <= 0) {
-        that.scrollHeight = systemInfo.windowHeight
+        that.scrollHeight = systemInfo.windowHeight;
       }
-      that.msgList = that.list
+      that.msgList = that.list;
       // 为每个数据项添加一个id，后面通过这个id来操控UI
       for (let i = 0; i < this.msgList.length; i++) {
-        let itemData = this.msgList[i]
+        let itemData = this.msgList[i];
         // 判断当前list（原始数据）中的每一项是否存在id这个字段，如果没有就自动加上
         // 如果不加上id这个字段数据列表就会错乱，目前不知道什么原因引起的
         if (!itemData.id) {
-          itemData.id = i
+          itemData.id = i;
         }
-        itemData['swipe-delete-id'] = 'swipe-delete-id-' + i
+        itemData['swipe-delete-id'] = 'swipe-delete-id-' + i;
       }
-      that.$apply()
+      that.$apply();
       // 根据右边menu的宽度计算item最大左滑的距离，
       wx.createSelectorQuery().select('.swipe-menu-edit').boundingClientRect(function (rect) {
         if (rect) {
-          that.correctMoveRight += rect.width
+          that.correctMoveRight += rect.width;
         }
-      }).exec()
+      }).exec();
       wx.createSelectorQuery().select('.swipe-menu-delete').boundingClientRect(function (rect) {
         if (rect) {
-          that.correctMoveRight += rect.width
+          that.correctMoveRight += rect.width;
         }
         // 最大左滑距离是menu总长度的+10像素,如果左边的menu总长度为0，即都不显示按钮则不可以左滑
         if (that.correctMoveRight <= 0) {
-          that.maxMoveLeft = 0
+          that.maxMoveLeft = 0;
         } else {
-          that.maxMoveLeft = that.correctMoveRight + 10
+          that.maxMoveLeft = that.correctMoveRight + 10;
         }
-      }).exec()
+      }).exec();
       // 根据右边menu的宽度计算item最大左滑的距离，
       wx.createSelectorQuery().select('.swipe-menu-add').boundingClientRect(function (rect) {
         if (rect) {
-          that.correctMoveLeft += rect.width
+          that.correctMoveLeft += rect.width;
         }
-      }).exec()
+      }).exec();
       wx.createSelectorQuery().select('.swipe-menu-mark').boundingClientRect(function (rect) {
         if (rect) {
-          that.correctMoveLeft += rect.width
+          that.correctMoveLeft += rect.width;
         }
         // 最大右滑距离是menu总长度的+10像素,如果左边的menu总长度为0，即都不显示按钮则不可以左滑
         if (that.correctMoveLeft <= 0) {
-          that.maxMoveRight = 0
+          that.maxMoveRight = 0;
         } else {
-          that.maxMoveRight = that.correctMoveLeft + 10
+          that.maxMoveRight = that.correctMoveLeft + 10;
         }
-      }).exec()
+      }).exec();
     }
 
     /**
      * 更新组件（外部调用）
      */
     update() {
-      this.internalInit()
+      this.internalInit();
     }
     methods = {
       ontouchstart: function (e) {
         if (this.showState === 1) {
-          this.touchStartState = 1
-          this.showState = 0
-          this.moveX = 0
-          this.translateXMsgItem(this.lastShowMsgId, 0, 200)
-          this.lastShowMsgId = ''
-          return
+          this.touchStartState = 1;
+          this.showState = 0;
+          this.moveX = 0;
+          this.translateXMsgItem(this.lastShowMsgId, 0, 200);
+          this.lastShowMsgId = '';
+          return;
         }
-        this.firstTouchX = e.touches[0].clientX
-        this.firstTouchY = e.touches[0].clientY
+        this.firstTouchX = e.touches[0].clientX;
+        this.firstTouchY = e.touches[0].clientY;
         if (this.firstTouchX > this.swipeCheckX) {
-          this.swipeCheckState = 1
+          this.swipeCheckState = 1;
         }
       },
       ontouchmove: function (e) {
         if (this.swipeCheckState === 0) {
-          return
+          return;
         }
         // 当开始触摸时有菜单显示时，不处理滑动操作
         if (this.touchStartState === 1) {
-          return
+          return;
         }
-        let moveX = e.touches[0].clientX - this.firstTouchX
-        let moveY = e.touches[0].clientY - this.firstTouchY
+        let moveX = e.touches[0].clientX - this.firstTouchX;
+        let moveY = e.touches[0].clientY - this.firstTouchY;
         // 已触发垂直滑动，由scroll-view处理滑动操作
         if (this.swipeDirection === 2) {
-          return
+          return;
         }
         // 未触发滑动方向
         if (this.swipeDirection === 0) {
           // 触发垂直操作
           if (Math.abs(moveY) > 4) {
-            this.swipeDirection = 2
-            return
+            this.swipeDirection = 2;
+            return;
           }
           // 触发水平操作
           if (Math.abs(moveX) > 4) {
-            this.swipeDirection = 1
+            this.swipeDirection = 1;
           } else {
-            return
+            return;
           }
         }
         // 判断当前的item滑动方向，如果moveX >0 这想有滑动，反正向左滑动
         if (moveX < 0) {
           // 检测最大左滑距离
           if (moveX < -this.maxMoveLeft) {
-            moveX = -this.maxMoveLeft
+            moveX = -this.maxMoveLeft;
           }
         } else {
           if (moveX > this.maxMoveRight) {
-            moveX = this.maxMoveRight
+            moveX = this.maxMoveRight;
           }
         }
-        this.scrollY = false
+        this.scrollY = false;
         // 如果上一次和本次位置为发送变化就不执行平移
         if (this.moveX === moveX) {
-          return
+          return;
         }
-        this.moveX = moveX
-        this.translateXMsgItem(e.currentTarget.id, this.moveX, 0)
+        this.moveX = moveX;
+        this.translateXMsgItem(e.currentTarget.id, this.moveX, 0);
       },
       ontouchend: function (e) {
-        this.swipeCheckState = 0
-        let swipeDirection = this.swipeDirection
-        this.swipeDirection = 0
+        this.swipeCheckState = 0;
+        let swipeDirection = this.swipeDirection;
+        this.swipeDirection = 0;
         if (this.touchStartState === 1) {
-          this.touchStartState = 0
-          return
+          this.touchStartState = 0;
+          return;
         }
         // 垂直滚动，忽略
         if (swipeDirection !== 1) {
-          return
+          return;
         }
         if (this.moveX === 0) {
-          this.showState = 0
+          this.showState = 0;
           // 不显示菜单状态下,激活垂直滚动
-          return
+          return;
         }
         if (this.moveX === this.correctMoveRight) {
-          this.showState = 1
-          this.lastShowMsgId = e.currentTarget.id
-          return
+          this.showState = 1;
+          this.lastShowMsgId = e.currentTarget.id;
+          return;
         }
 
         // 判断当前的item滑动方向，如果moveX >0 这想有滑动，反正向左滑动
         if (this.moveX < 0) {
           if (this.moveX < -(this.maxMoveLeft * this.thresholdMoveLeft)) {
-            this.moveX = -this.correctMoveRight
-            this.showState = 1
-            this.lastShowMsgId = e.currentTarget.id
+            this.moveX = -this.correctMoveRight;
+            this.showState = 1;
+            this.lastShowMsgId = e.currentTarget.id;
           } else {
-            this.moveX = 0
-            this.showState = 0
+            this.moveX = 0;
+            this.showState = 0;
           }
         } else {
           if (this.moveX > (this.maxMoveRight * this.thresholdMoveLeft)) {
-            this.moveX = this.correctMoveLeft
-            this.showState = 1
-            this.lastShowMsgId = e.currentTarget.id
+            this.moveX = this.correctMoveLeft;
+            this.showState = 1;
+            this.lastShowMsgId = e.currentTarget.id;
           } else {
-            this.moveX = 0
-            this.showState = 0
+            this.moveX = 0;
+            this.showState = 0;
           }
         }
-        this.scrollY = true
-        this.translateXMsgItem(e.currentTarget.id, this.moveX, 200)
+        this.scrollY = true;
+        this.translateXMsgItem(e.currentTarget.id, this.moveX, 200);
       },
       onDeleteButtonTap: function (e) {
-        let swipeId = e.currentTarget.id
-        let positon = this.getItemIndex(swipeId)
-        this.$emit('deleteTap', this, this.msgList[positon])
+        let swipeId = e.currentTarget.id;
+        let positon = this.getItemIndex(swipeId);
+        this.$emit('deleteTap', this, this.msgList[positon]);
       },
       onDeleteButtonLongtap: function (e) {
-        let swipeId = e.currentTarget.id
-        let positon = this.getItemIndex(swipeId)
-        this.$emit('deleteLongTap', this, this.msgList[positon])
+        let swipeId = e.currentTarget.id;
+        let positon = this.getItemIndex(swipeId);
+        this.$emit('deleteLongTap', this, this.msgList[positon]);
       },
       onEditButtonTap: function (e) {
-        let swipeId = e.currentTarget.id
-        let positon = this.getItemIndex(swipeId)
-        this.$emit('editTap', this, this.msgList[positon])
+        let swipeId = e.currentTarget.id;
+        let positon = this.getItemIndex(swipeId);
+        this.$emit('editTap', this, this.msgList[positon]);
       },
       onEditButtonLongtap: function (e) {
-        let swipeId = e.currentTarget.id
-        let positon = this.getItemIndex(swipeId)
-        this.$emit('editLongTap', this, this.msgList[positon])
+        let swipeId = e.currentTarget.id;
+        let positon = this.getItemIndex(swipeId);
+        this.$emit('editLongTap', this, this.msgList[positon]);
       },
       onAddButtonTap: function (e) {
-        let swipeId = e.currentTarget.id
-        let positon = this.getItemIndex(swipeId)
-        this.$emit('addTap', this, this.msgList[positon])
+        let swipeId = e.currentTarget.id;
+        let positon = this.getItemIndex(swipeId);
+        this.$emit('addTap', this, this.msgList[positon]);
       },
       onAddButtonLongtap: function (e) {
-        let swipeId = e.currentTarget.id
-        let positon = this.getItemIndex(swipeId)
-        this.$emit('addLongTap', this, this.msgList[positon])
+        let swipeId = e.currentTarget.id;
+        let positon = this.getItemIndex(swipeId);
+        this.$emit('addLongTap', this, this.msgList[positon]);
       },
       onMarkButtonTap: function (e) {
-        let swipeId = e.currentTarget.id
-        let positon = this.getItemIndex(swipeId)
-        this.$emit('markTap', this, this.msgList[positon])
+        let swipeId = e.currentTarget.id;
+        let positon = this.getItemIndex(swipeId);
+        this.$emit('markTap', this, this.msgList[positon]);
       },
       onMarkButtonLongtap: function (e) {
-        let swipeId = e.currentTarget.id
-        let positon = this.getItemIndex(swipeId)
-        this.$emit('markLongTap', this, this.msgList[positon])
+        let swipeId = e.currentTarget.id;
+        let positon = this.getItemIndex(swipeId);
+        this.$emit('markLongTap', this, this.msgList[positon]);
       }
-    }
+    };
 
     deleteMsgItem(swipeId) {
-      let animation = wx.createAnimation({duration: 200})
-      animation.height(0).opacity(0).step()
-      this.animationMsgWrapItem(swipeId, animation)
-      let that = this
+      let animation = wx.createAnimation({duration: 200});
+      animation.height(0).opacity(0).step();
+      this.animationMsgWrapItem(swipeId, animation);
+      let that = this;
       setTimeout(function () {
-        let index = that.getItemIndex(swipeId)
-        that.msgList.splice(index, 1)
-        that.$apply()
-      }, 200)
-      this.showState = 0
+        let index = that.getItemIndex(swipeId);
+        that.msgList.splice(index, 1);
+        that.$apply();
+      }, 200);
+      this.showState = 0;
     }
 
     /**
@@ -408,20 +408,20 @@
      * @return number
      */
     getItemIndex(swipeId) {
-      let msgList = this.msgList
+      let msgList = this.msgList;
       for (let i = 0; i < msgList.length; i++) {
         if (msgList[i]['swipe-delete-id'] === swipeId) {
-          return i
+          return i;
         }
       }
-      return -1
+      return -1;
     }
     /**
      * 删除item,外部调用(实际是对item 隐藏并不会删除原始数据)
      */
     deleteItem() {
       if (this.lastShowMsgId) {
-        this.deleteMsgItem(this.lastShowMsgId)
+        this.deleteMsgItem(this.lastShowMsgId);
       }
     }
 
@@ -430,9 +430,9 @@
      */
     closeItem() {
       if (this.lastShowMsgId) {
-        this.translateXMsgItem(this.lastShowMsgId, 0, 200)
-        this.showState = 0
-        this.$apply()
+        this.translateXMsgItem(this.lastShowMsgId, 0, 200);
+        this.showState = 0;
+        this.$apply();
       }
     }
 
@@ -443,9 +443,9 @@
      * @param duration
      */
     translateXMsgItem(swipeId, x, duration) {
-      let animation = wx.createAnimation({duration: duration})
-      animation.translateX(x).step()
-      this.animationMsgItem(swipeId, animation)
+      let animation = wx.createAnimation({duration: duration});
+      animation.translateX(x).step();
+      this.animationMsgItem(swipeId, animation);
     };
     /**
      * 设置Item左滑的动画
@@ -453,17 +453,17 @@
      * @param animation
      */
     animationMsgItem(swipeId, animation) {
-      let index = 0
+      let index = 0;
       if (this.currentPosition.swipeId === swipeId) {
-        index = this.currentPosition.position
+        index = this.currentPosition.position;
       } else {
-        index = this.getItemIndex(swipeId)
+        index = this.getItemIndex(swipeId);
         this.currentPosition = {
           swipeId: swipeId,
           position: index
-        }
+        };
       }
-      this.msgList[index].animation = animation.export()
+      this.msgList[index].animation = animation.export();
     };
 
     /**
@@ -472,8 +472,8 @@
      * @param animation
      */
     animationMsgWrapItem(swipeId, animation) {
-      let index = this.getItemIndex(swipeId)
-      this.msgList[index].wrapAnimation = animation.export()
+      let index = this.getItemIndex(swipeId);
+      this.msgList[index].wrapAnimation = animation.export();
     };
   }
 </script>

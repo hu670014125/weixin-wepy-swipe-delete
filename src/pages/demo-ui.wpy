@@ -185,28 +185,27 @@
 </template>
 
 <script>
-  import wepy from 'wepy'
-  import Toast from 'wepy-com-toast'
-
+  import wepy from 'wepy';
+  import Toast from 'wepy-com-toast';
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: 'UI布局'
-    }
+    };
     components = {
       toast: Toast
-    }
+    };
     data = {
       userInfo: {}
-    }
+    };
     onLoad() {
-      let self = this
+      let self = this;
       this.$parent.getUserInfo(function (userInfo) {
         if (userInfo) {
-          console.log(userInfo)
-          self.userInfo = userInfo
-          self.$apply()
+          console.log(userInfo);
+          self.userInfo = userInfo;
+          self.$apply();
         }
-      })
+      });
     }
   }
 </script>
