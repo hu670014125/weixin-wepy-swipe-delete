@@ -178,6 +178,8 @@
      * 内部初始化
      */
     internalInit() {
+      this.correctMoveLeft = 0;
+      this.correctMoveRight = 0;
       let that = this;
       let systemInfo = wepy.getSystemInfoSync();
       // scroll的高度为0时，我们为屏幕的高度
