@@ -124,10 +124,13 @@ methods = {
  deleteItem | 删除当前操作的item(原始数据+view)都会被删除|不需要参数
  closeItem | 关闭当前操作的item，原始数据不变|不需要参数
  
+ 如果在使用的过程中遇到什么问题可以告诉我，我及时修复。
+ 
+ 邮箱：hu670014125@163.com
  
 ### LICENSE
 
-Copyright 2019 WealthCodes
+Copyright 2019 hu670014125
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
